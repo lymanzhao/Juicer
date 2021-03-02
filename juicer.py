@@ -56,32 +56,32 @@ class Juicer(QWidget):
 
         self.pathLine = QTextEdit(readOnly=True)
         self.pathLine.setPlaceholderText("视频源文件")
-        grid.addWidget(self.pathLine, 1, 0, 3, 1)
+        grid.addWidget(self.pathLine, 1, 0, 1, 1)
 
         self.selectButton = QPushButton("选择文件", self)
         self.selectButton.setToolTip('选择MKV视频源文件')
         self.selectButton.clicked.connect(self.openFileNamesDialog)
         self.selectButton.setFixedWidth(160)
-        grid.addWidget(self.selectButton, 2, 1)
+        grid.addWidget(self.selectButton, 1, 1)
 
 
       
         self.dirLine = QLineEdit(readOnly=True)
         self.dirLine.setPlaceholderText("输出文件夹")
-        grid.addWidget(self.dirLine, 4, 0)
+        grid.addWidget(self.dirLine, 2, 0)
 
         outdirButton = QPushButton("输出目录", self)
         outdirButton.clicked.connect(self.saveFileDialog)
         outdirButton.setToolTip('存储视频的文件夹')
-        grid.addWidget(outdirButton, 4, 1)
+        grid.addWidget(outdirButton, 2, 1)
 
         self.extrLine = QTextEdit(readOnly=True)
         self.extrLine.setPlaceholderText("等待执行")
-        grid.addWidget(self.extrLine, 5, 0, 5, 1)
+        grid.addWidget(self.extrLine, 3, 0, 1, 1)
 
         self.extractorButton = QPushButton("提取", self)
         self.extractorButton.clicked.connect(self.extractor)
-        grid.addWidget(self.extractorButton, 11, 1)
+        grid.addWidget(self.extractorButton, 4, 1)
 
         self.suffix = '.mp4'
 
@@ -95,7 +95,7 @@ class Juicer(QWidget):
         self.cmdsuffixCombo.addItem("TrueHD")
         self.cmdsuffixCombo.activated[str].connect(self.onChangedCmdsuffix)
 
-        grid.addWidget(self.cmdsuffixCombo, 11, 0,
+        grid.addWidget(self.cmdsuffixCombo, 4, 0,
                        alignment=Qt.AlignRight)
 
         # nullLabel = QLabel('')
