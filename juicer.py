@@ -45,7 +45,7 @@ class Juicer(QWidget):
 
         #设置窗口大小
 
-        self.resize(self.width*0.5, self.height*0.5)
+        self.resize(self.width*0.3, self.height*0.5)
 
         # 设置窗口标题
         self.setWindowTitle('  Juicer 提取器')
