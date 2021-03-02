@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['juicer.py'],
-             pathex=['D:\\Juicer'],
+             pathex=['d:\\GitHub\\Juicer'],
              binaries=[],
              datas=[],
              hiddenimports=[],

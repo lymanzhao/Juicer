@@ -7,7 +7,6 @@
 # ffmpeg -i "E:\TV\美国\看见 See.S01.HDR.2160p.WEB.h265-NiXON[rartv]\see.s01e01.hdr.2160p.web.h265-nixon.mkv" -vn -c copy D:\vn.mp4
 # ffmpeg -i "E:\TV\美国\看见 See.S01.HDR.2160p.WEB.h265-NiXON[rartv]\see.s01e01.hdr.2160p.web.h265-nixon.mkv" -an -c copy D:\an.mp4
 # pyinstaller -w -c -D --icon=juicer_icon.ico juicer.py
-# pyinstaller -w -c -F --icon=juicer_icon.ico --add-data juicer.py
 # 
 
 
@@ -64,6 +63,8 @@ class Juicer(QWidget):
         self.pathLine.setPlaceholderText("视频源文件")
         # self.pathLine = QTextEdit.autoFormatting()
 
+        
+
 
         gridlayoutODir = QFormLayout()
         vbox.addLayout(gridlayoutODir)
@@ -81,13 +82,20 @@ class Juicer(QWidget):
 
 
         hbox = QHBoxLayout()
+        gridlayoutNull = QFormLayout()
+        gridlayoutNull.addWidget(QLabel())
+        hbox.addLayout(gridlayoutNull)
 
 
         gridlayout2 = QFormLayout()
         selectButton = QPushButton("选择文件", self)
-        gridlayout2.addRow("", selectButton)
-        hbox.addLayout(gridlayout2)
+        selectButton.setFixedWidth(120)
         # selectButton.setAlignment(Qt.AlignRight)
+        gridlayout2.addRow("", selectButton)
+        # gridlayout2(selectButton,alignment=Qt.AlignRight)
+        
+        hbox.addLayout(gridlayout2)
+        
         selectButton.setToolTip('选择MKV视频源文件')
         selectButton.clicked.connect(self.openFileNamesDialog)
 
@@ -107,23 +115,32 @@ class Juicer(QWidget):
         tbox = QHBoxLayout()
 
         
-        self.suffixCBox = QCheckBox("mov",self)
-        self.suffixCBox.stateChanged.connect(self.suffixFilename)
+        # self.suffixCBox = QCheckBox("mov",self)
+        # self.suffixCBox.stateChanged.connect(self.suffixFilename)
         self.suffix = '.mp4'
 
-        gridlayoutCBox = QFormLayout()
-        gridlayoutCBox.addRow("", self.suffixCBox)
+        # gridlayoutCBox = QFormLayout()
+        # gridlayoutCBox.addRow("", self.suffixCBox)
+        # tbox.addLayout(gridlayoutCBox)
 
-        tbox.addLayout(gridlayoutCBox)
-        # self.satusLable.setText('')
-        self.muxCBox = QCheckBox("TrueHD", self)
-        self.muxCBox.stateChanged.connect(self.muxCmd)
+        # self.muxCBox = QCheckBox("TrueHD", self)
+        # self.muxCBox.stateChanged.connect(self.muxCmd)
         self.mux = ''
-        
-        gridlayoutmBox = QFormLayout()
-        gridlayoutmBox.addRow("", self.muxCBox)
+    
+        # gridlayoutmBox = QFormLayout()
+        # gridlayoutmBox.addRow("", self.muxCBox)
+        self.cmdsuffixCombo = QComboBox(self)
+        self.cmdsuffixCombo.setFixedWidth(100)
+        self.cmdsuffixCombo.addItem("MP4")
+        self.cmdsuffixCombo.addItem("MOV")
+        self.cmdsuffixCombo.addItem("TrueHD")
+        self.cmdsuffixCombo.activated[str].connect(self.onChangedCmdsuffix)
 
-        tbox.addLayout(gridlayoutmBox)
+        gridlayoutComBo = QFormLayout()
+        gridlayoutComBo.addRow("", self.cmdsuffixCombo)
+        tbox.addLayout(gridlayoutComBo)
+
+        tbox.addLayout(gridlayoutComBo)
 
 
 
@@ -135,6 +152,17 @@ class Juicer(QWidget):
 
 
         self.setLayout(vlayout)
+
+    def onChangedCmdsuffix(self, cmdsuffix):
+        if cmdsuffix == "MP4":
+            self.suffix = '.mp4'
+            print ('mp4')
+        if cmdsuffix == "MOV":
+            self.suffix = '.mov'
+        if cmdsuffix == "TrueHD":
+            self.mux = ' -strict experimental '
+        
+
 
     def suffixFilename(self, state):
 
@@ -150,7 +178,10 @@ class Juicer(QWidget):
         
         if state2 == Qt.Checked:
             # print('Checked')
-            self.mux = ' -strict -2 '
+            # self.mux = ' -strict -2 '
+            self.mux = ' -strict experimental '
+            
+            
  
         if state2 == Qt.Unchecked:
             # print('Unchecked')
