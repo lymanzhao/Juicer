@@ -2,7 +2,9 @@
 
 ![](img/juicer_icon.svg)
 
-Jucicer extractor 是应剪辑师楚老师的需求，将.mkv文件中的视音频直接重新打包到mp4文件中，以便给Adobe Premiere，Davinci Resolve等专业软件使用，而不需要转码，破坏画面。
+想在专业剪辑软件里面拉片、自动分割镜头，但是想想硬盘里面一堆mkv高清片源不能导入，就立即被劝退。
+
+Jucicer extractor 是应楚老师的需求，将.mkv文件中的视音频直接重新打包到mp4文件中，以便给Adobe Premiere，Davinci Resolve等专业软件使用，而不需要转码，破坏画面。
 
 主流的转码软件再次编码的时候，如4K、h265、10 bit还是HDR，不仅编码时间久，效率低，并且对高画质（10bit 、HDR）、音频（杜比）等都会再次编码降低质量，甚至出错。
 
