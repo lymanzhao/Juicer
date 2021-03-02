@@ -18,11 +18,11 @@ Jucicer extractor 仅仅使用文件封装技术，支持多线程，几乎不�
 
 GUI使用PyQT5
 
-编解码使用了 ffmpeg
+编解码使用了开源的ffmpeg
 
 可选输出mov文件，需要注意quicktime player不支持某些特定编码和封装
 
-解决TrueHD版本的Experimental功能
+解决TrueHD版本封装功能，会将TrueHD 7.1转成立体声 
 
 
 
@@ -36,5 +36,5 @@ GUI使用PyQT5
 
 ### 新改界面
 
-![](img/03.png)
+![](img/04.png)
 

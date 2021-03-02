@@ -45,90 +45,49 @@ class Juicer(QWidget):
 
         #设置窗口大小
 
-        self.resize(self.width*0.6, self.height*0.6)
+        self.resize(self.width*0.5, self.height*0.5)
 
         # 设置窗口标题
         self.setWindowTitle('  Juicer 提取器')
         self.setWindowIcon(QIcon('img/juicer_icon.svg'))
 
+        # 修改成网格布局
+        grid = QGridLayout()
 
-        # 添加垂直布局
-        vbox = QVBoxLayout()
-
-        gridlayout1 = QFormLayout()
-        vbox.addLayout(gridlayout1)
         self.pathLine = QTextEdit(readOnly=True)
-        # self.pathLine.AutoAll
-        gridlayout1.addRow("文件", self.pathLine)
         self.pathLine.setPlaceholderText("视频源文件")
-        # self.pathLine = QTextEdit.autoFormatting()
+        grid.addWidget(self.pathLine, 1, 0, 3, 1)
 
-        
+        self.selectButton = QPushButton("选择文件", self)
+        self.selectButton.setToolTip('选择MKV视频源文件')
+        self.selectButton.clicked.connect(self.openFileNamesDialog)
+        self.selectButton.setFixedWidth(160)
+        grid.addWidget(self.selectButton, 2, 1)
 
 
-        gridlayoutODir = QFormLayout()
-        vbox.addLayout(gridlayoutODir)
+      
         self.dirLine = QLineEdit(readOnly=True)
-        gridlayoutODir.addRow("输出目录", self.dirLine)
         self.dirLine.setPlaceholderText("输出文件夹")
-
-        gridlayoutextr = QFormLayout()
-        vbox.addLayout(gridlayoutextr)
-
-        self.extrLine = QTextEdit(readOnly=True)
-        self.extrLine.setAlignment(Qt.AlignLeft)
-        gridlayoutextr.addRow("", self.extrLine)
-        self.extrLine.setPlaceholderText("等待执行")
-
-
-        hbox = QHBoxLayout()
-        gridlayoutNull = QFormLayout()
-        gridlayoutNull.addWidget(QLabel())
-        hbox.addLayout(gridlayoutNull)
-
-
-        gridlayout2 = QFormLayout()
-        selectButton = QPushButton("选择文件", self)
-        selectButton.setFixedWidth(120)
-        # selectButton.setAlignment(Qt.AlignRight)
-        gridlayout2.addRow("", selectButton)
-        # gridlayout2(selectButton,alignment=Qt.AlignRight)
-        
-        hbox.addLayout(gridlayout2)
-        
-        selectButton.setToolTip('选择MKV视频源文件')
-        selectButton.clicked.connect(self.openFileNamesDialog)
+        grid.addWidget(self.dirLine, 4, 0)
 
         outdirButton = QPushButton("输出目录", self)
         outdirButton.clicked.connect(self.saveFileDialog)
         outdirButton.setToolTip('存储视频的文件夹')
-        gridlayoutoutdir = QFormLayout()
-        gridlayoutoutdir.addRow("", outdirButton)
-        hbox.addLayout(gridlayoutoutdir)
+        grid.addWidget(outdirButton, 4, 1)
 
-        extractorButton = QPushButton("提取", self)
-        extractorButton.clicked.connect(self.extractor)
-        gridlayout3 = QFormLayout()
-        gridlayout3.addRow("", extractorButton)
-        hbox.addLayout(gridlayout3)
+        self.extrLine = QTextEdit(readOnly=True)
+        self.extrLine.setPlaceholderText("等待执行")
+        grid.addWidget(self.extrLine, 5, 0, 5, 1)
 
-        tbox = QHBoxLayout()
+        self.extractorButton = QPushButton("提取", self)
+        self.extractorButton.clicked.connect(self.extractor)
+        grid.addWidget(self.extractorButton, 11, 1)
 
-        
-        # self.suffixCBox = QCheckBox("mov",self)
-        # self.suffixCBox.stateChanged.connect(self.suffixFilename)
         self.suffix = '.mp4'
 
-        # gridlayoutCBox = QFormLayout()
-        # gridlayoutCBox.addRow("", self.suffixCBox)
-        # tbox.addLayout(gridlayoutCBox)
-
-        # self.muxCBox = QCheckBox("TrueHD", self)
-        # self.muxCBox.stateChanged.connect(self.muxCmd)
         self.mux = ''
     
-        # gridlayoutmBox = QFormLayout()
-        # gridlayoutmBox.addRow("", self.muxCBox)
+
         self.cmdsuffixCombo = QComboBox(self)
         self.cmdsuffixCombo.setFixedWidth(100)
         self.cmdsuffixCombo.addItem("MP4")
@@ -136,22 +95,13 @@ class Juicer(QWidget):
         self.cmdsuffixCombo.addItem("TrueHD")
         self.cmdsuffixCombo.activated[str].connect(self.onChangedCmdsuffix)
 
-        gridlayoutComBo = QFormLayout()
-        gridlayoutComBo.addRow("", self.cmdsuffixCombo)
-        tbox.addLayout(gridlayoutComBo)
+        grid.addWidget(self.cmdsuffixCombo, 11, 0,
+                       alignment=Qt.AlignRight)
 
-        tbox.addLayout(gridlayoutComBo)
+        # nullLabel = QLabel('')
+        # grid.addWidget(nullLabel, 12, 0)
 
-
-
-        #添加布局
-        vlayout = QVBoxLayout()
-        vlayout.addLayout(vbox)
-        vlayout.addLayout(hbox)
-        vlayout.addLayout(tbox)
-
-
-        self.setLayout(vlayout)
+        self.setLayout(grid)
 
     def onChangedCmdsuffix(self, cmdsuffix):
         if cmdsuffix == "MP4":
@@ -161,8 +111,6 @@ class Juicer(QWidget):
             self.suffix = '.mov'
         if cmdsuffix == "TrueHD":
             self.mux = ' -strict experimental '
-        
-
 
     def suffixFilename(self, state):
 
@@ -194,7 +142,6 @@ class Juicer(QWidget):
         self.inputFiles, _ = QFileDialog.getOpenFileNames(self,"QFileDialog.getOpenFileNames()", "","视频文件 (*.mkv *.mp4)", options=options)
         if self.inputFiles:
             # print(self.inputFiles)
-            # self.fileurl = QUrl.fromLocalFile(self.inputFiles)
             self.filelist =",".join(self.inputFiles)
             self.pathLine.setPlainText(str(self.filelist))
         else:
@@ -222,7 +169,9 @@ class Juicer(QWidget):
                 self.outputFilePath = str(self.outputFileDir) + '/' + str(self.inputFileName)
                 self.outputFilePathSuffix = str(self.outputFilePath).replace(self.inputFileSuffix,'')
 
-                satusShowLable = self.outputFilePath + '  正在执行视音频提取工作，请稍等……  '
+                self.extractorButton.setEnabled(False)
+
+                satusShowLable = self.outputFilePath + '  正在执行封装工作，请稍等……  '
                 self.extrLine.append(satusShowLable)
 
                 ffmpeg = os.getcwd().replace('\\','/') + '/bin/ffmpeg.exe'
@@ -231,15 +180,11 @@ class Juicer(QWidget):
                 thread = threading.Thread(target=self.extractorThread,args=(ffmpegcmd,))
                 thread.start()
 
-
-
-
                 QApplication.processEvents()
 
         except AttributeError as err:
-            self.extrLine.append('  请检查，文件路径有没有指定  ')
+            self.extrLine.append('  请检查，文件路径  ')
             # self.extrLine.setStyleSheet('color: yellow')
-
             pass
 
 
@@ -248,12 +193,8 @@ class Juicer(QWidget):
         stdout, stderr = ffmpegcmdrun.communicate()
         finalShowText = self.outputFilePathSuffix + self.suffix + '  提取完成  '
         self.extrLine.append(finalShowText)
-        # self.extrLine.append(stdout)
-        # self.extrLine.append(stderr)
-
-        # self.extrLine.setStyleSheet('color: yellow')
-        # satusShowLable = '  '
-        # self.extrLine.append(satusShowLable)
+        self.extractorButton.setEnabled(True)
+        
 
 
 if __name__ == '__main__':
