@@ -11,9 +11,9 @@
 
 
 import os,sys
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 import qdarkstyle
 from pathlib import Path
@@ -170,7 +170,7 @@ class Juicer(QWidget):
                 self.outputFilePath = str(self.outputFileDir) + '/' + str(self.inputFileName)
                 outputFilePathSuffix = str(self.outputFilePath).replace(self.inputFileSuffix,'')
 
-                self.extractorButton.setDisabled(True)
+                self.extractorButton.setEnabled(False)
 
                 satusShowLable = self.outputFilePath + '  正在执行封装工作，请稍等……  '
                 self.extrLine.append(satusShowLable)
@@ -181,7 +181,6 @@ class Juicer(QWidget):
                 thread = threading.Thread(target=self.extractorThread, args=(
                     ffmpegcmd, outputFilePathSuffix,))
                 thread.start()
-
 
                 QApplication.processEvents()
 
@@ -197,11 +196,12 @@ class Juicer(QWidget):
         finalShowText = outputFilePathSuffix + self.suffix + '  提取完成  '
         self.extrLine.append(finalShowText)
         self.extractorButton.setEnabled(True)
+        
 
 
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
-    app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyside2'))
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     ex = Juicer()
     sys.exit(app.exec_())
