@@ -11,9 +11,9 @@
 
 
 import os,sys
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 import qdarkstyle
 from pathlib import Path
@@ -38,14 +38,14 @@ class Juicer(QWidget):
 
     def initUI(self):
         #获取显示器分辨率大小
-        self.desktop = QApplication.desktop()
-        self.screenRect = self.desktop.screenGeometry()
+        self.desktop = QApplication.primaryScreen()
+        self.screenRect = self.desktop.availableGeometry()
         self.height = self.screenRect.height()
         self.width = self.screenRect.width()
 
         #设置窗口大小
 
-        self.resize(self.width*0.5, self.height*0.5)
+        self.resize(int(self.width*0.6), int(self.height*0.6))
 
         # 设置窗口标题
         self.setWindowTitle('  Juicer 提取器')
@@ -85,55 +85,41 @@ class Juicer(QWidget):
 
         self.suffix = '.mp4'
 
-        self.mux = ''
+        self.mux = ' -c copy '
     
 
         self.cmdsuffixCombo = QComboBox(self)
         self.cmdsuffixCombo.setFixedWidth(100)
         self.cmdsuffixCombo.addItem("MP4")
         self.cmdsuffixCombo.addItem("MOV")
-        self.cmdsuffixCombo.addItem("TrueHD")
+        self.cmdsuffixCombo.addItem("TrueHD2Eac3")
+        self.cmdsuffixCombo.addItem("Atmos")
         self.cmdsuffixCombo.activated[str].connect(self.onChangedCmdsuffix)
 
         grid.addWidget(self.cmdsuffixCombo, 4, 0,
                        alignment=Qt.AlignRight)
 
-        # nullLabel = QLabel('')
-        # grid.addWidget(nullLabel, 12, 0)
 
         self.setLayout(grid)
 
     def onChangedCmdsuffix(self, cmdsuffix):
         if cmdsuffix == "MP4":
             self.suffix = '.mp4'
-            print ('mp4')
+            self.mux = ' -c copy '
+            # print ('mp4')
         if cmdsuffix == "MOV":
+            self.mux = ' -c copy '
             self.suffix = '.mov'
-        if cmdsuffix == "TrueHD":
-            self.mux = ' -strict experimental '
-
-    def suffixFilename(self, state):
-
-        if state == Qt.Checked:
-            # print('Checked')
-            self.suffix = '.mov'
- 
-        if state == Qt.Unchecked:
-            # print('Unchecked')
+            
+        if cmdsuffix == "TrueHD2Eac3":
+            self.mux = ' -vcodec copy -acodec eac3 '
             self.suffix = '.mp4'
 
-    def muxCmd(self, state2):
-        
-        if state2 == Qt.Checked:
-            # print('Checked')
+        if cmdsuffix == "Atmos":
             # self.mux = ' -strict -2 '
             self.mux = ' -strict experimental '
-            
-            
- 
-        if state2 == Qt.Unchecked:
-            # print('Unchecked')
-            self.mux = ''  
+            self.suffix = '.mp4'
+
         
 
     def openFileNamesDialog(self):
@@ -170,18 +156,17 @@ class Juicer(QWidget):
                 self.outputFilePath = str(self.outputFileDir) + '/' + str(self.inputFileName)
                 outputFilePathSuffix = str(self.outputFilePath).replace(self.inputFileSuffix,'')
 
-                self.extractorButton.setDisabled(True)
+                self.extractorButton.setEnabled(False)
 
                 satusShowLable = self.outputFilePath + '  正在执行封装工作，请稍等……  '
                 self.extrLine.append(satusShowLable)
 
                 ffmpeg = os.getcwd().replace('\\','/') + '/bin/ffmpeg.exe'
-                ffmpegcmd = str(ffmpeg + " -y -i " + '"' + inputFilePath +'"' + " -c copy " + self.mux + '"' + outputFilePathSuffix + self.suffix + '"')
+                ffmpegcmd = str(ffmpeg + " -y -i " + '"' + inputFilePath +'"' + self.mux + '"' + outputFilePathSuffix + self.suffix + '"')
 
                 thread = threading.Thread(target=self.extractorThread, args=(
                     ffmpegcmd, outputFilePathSuffix,))
                 thread.start()
-
 
                 QApplication.processEvents()
 
@@ -197,11 +182,13 @@ class Juicer(QWidget):
         finalShowText = outputFilePathSuffix + self.suffix + '  提取完成  '
         self.extrLine.append(finalShowText)
         self.extractorButton.setEnabled(True)
+        
 
 
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
-    app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyside2'))
+    app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+    # app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyside2'))
     ex = Juicer()
     sys.exit(app.exec_())

@@ -22,9 +22,11 @@ GUI使用PyQT5
 
 编解码使用了开源的ffmpeg
 
-可选输出mov文件，需要注意quicktime player不支持某些特定编码和封装
+输出mov文件，需要注意quicktime player不支持某些特定编码和封装
 
-解决TrueHD版本封装功能，会将TrueHD 7.1转成立体声 
+TrueHD 7.1转Eac3 5.1
+
+保留杜比Atmos音频
 
 
 
