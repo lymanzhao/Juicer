@@ -7,7 +7,7 @@
 # ffmpeg -i "E:\TV\美国\看见 See.S01.HDR.2160p.WEB.h265-NiXON[rartv]\see.s01e01.hdr.2160p.web.h265-nixon.mkv" -vn -c copy D:\vn.mp4
 # ffmpeg -i "E:\TV\美国\看见 See.S01.HDR.2160p.WEB.h265-NiXON[rartv]\see.s01e01.hdr.2160p.web.h265-nixon.mkv" -an -c copy D:\an.mp4
 # pyinstaller -w -c -D --icon=juicer_icon.ico juicer.py
-#
+# 
 
 
 import os,sys
@@ -65,7 +65,7 @@ class Juicer(QWidget):
         grid.addWidget(self.selectButton, 1, 1)
 
 
-
+      
         self.dirLine = QLineEdit(readOnly=True)
         self.dirLine.setPlaceholderText("输出文件夹")
         grid.addWidget(self.dirLine, 2, 0)
@@ -86,7 +86,7 @@ class Juicer(QWidget):
         self.suffix = '.mp4'
 
         self.mux = ' -c copy '
-
+    
 
         self.cmdsuffixCombo = QComboBox(self)
         self.cmdsuffixCombo.setFixedWidth(100)
@@ -110,7 +110,7 @@ class Juicer(QWidget):
         if cmdsuffix == "MOV":
             self.mux = ' -c copy '
             self.suffix = '.mov'
-
+            
         if cmdsuffix == "TrueHD2Eac3":
             self.mux = ' -vcodec copy -acodec eac3 '
             self.suffix = '.mp4'
@@ -120,7 +120,7 @@ class Juicer(QWidget):
             self.mux = ' -strict experimental '
             self.suffix = '.mp4'
 
-
+        
 
     def openFileNamesDialog(self):
         options = QFileDialog.Options()
@@ -177,14 +177,12 @@ class Juicer(QWidget):
 
     def extractorThread(self, ffmpegcmd, outputFilePathSuffix):
         ffmpegcmdrun = subprocess.Popen(
-            ffmpegcmd, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, universal_newlines=True)
+            ffmpegcmd, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
         stdout, stderr = ffmpegcmdrun.communicate()
-        # while True:
-        #     self.extrLine.append(ffmpegcmdrun.stdout.readline())
         finalShowText = outputFilePathSuffix + self.suffix + '  提取完成  '
         self.extrLine.append(finalShowText)
         self.extractorButton.setEnabled(True)
-
+        
 
 
 if __name__ == '__main__':
